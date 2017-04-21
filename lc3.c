@@ -273,7 +273,6 @@ void aluFunction(int opcode, ALU_p alu){
 }
 
 void menu(CPU_p cpu, unsigned short memory[], ALU_p alu){
-
 //display registers and memory 
 printf("\n%21Welcome to the LC-3 Simulator Simulator\n\n");
 printf("%21Registor%21Memory\n");
@@ -309,17 +308,10 @@ for( ; i <16; i++){
 		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
 	}	
 }
-
-
-
-
-
-//display PC, IR, A, B, MAR, MDR, CC, N, Z, P
-
-//SELECT 1. load file, 3. step 5. display Mem 9.Exit 
-
-//input:
-//Output:
-
+printf("Select: 1) Load, 3) Step, 5) Display Mem, 9) Exit\n");
+printf(">1 File name: test.hex\n");
+printf("-----------------------------------------------------------------------------\n");
+printf("Input:\n");
+printf("Output:\n");
 }
 
