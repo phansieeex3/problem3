@@ -14,7 +14,7 @@ unsigned short memory[32];   // 32 words of memory enough to store simple progra
 
 //changes data, passed in by reference.
 void aluFunction(int opcode, ALU_p alu);
-void menu(CPU_p cpu, unsigned short memory[]);
+void menu(CPU_p cpu, unsigned short memory[], ALU_p alu);
 
 int main(int argc, char* argv[]) {
 //making change to code test
@@ -23,7 +23,7 @@ if (argc > 1){
 	sscanf(argv[1],"%hX", &com_in);//takes command from command line
  	struct cpu_s cpu1;//creating cpu
  	CPU_p cpu = &cpu1;//creating pointer to cpu
- 	cpu->pc =3;
+ 	cpu->pc =0x3000;
  	memory[0] = com_in;
 	cpu->reg[1] = FIVE;
 	cpu->reg[2] = FIVETEEN;
@@ -31,15 +31,13 @@ if (argc > 1){
  	controller(cpu);
 
 	 //loading hex file into memory array.__
-
-	 menu(cpu, memory);
 }
 }
 int controller (CPU_p cpu) 
 {
     struct alu_s alus;
     ALU_p alu = &alus;
-
+    menu(cpu, memory, alu);
     // check to make sure both pointers are not NULL
 	if (cpu == NULL || memory == NULL){
 		return 1;
@@ -274,24 +272,43 @@ void aluFunction(int opcode, ALU_p alu){
 
 }
 
-void menu(CPU_p cpu, unsigned short memory[]){
+void menu(CPU_p cpu, unsigned short memory[], ALU_p alu){
 
 //display registers and memory 
-printf("Register RO: x%04i \n", cpu->reg[0]);
-printf("Register R1: x%04i \n", cpu->reg[1]);
-printf("Register R2: x%04i \n", cpu->reg[2]);
-printf("Register R3: x%04i \n", cpu->reg[3]);
-printf("Register R4: x%04i \n", cpu->reg[4]);
-printf("Register R5: x%04i \n", cpu->reg[5]);
-printf("Register R6: x%04i \n", cpu->reg[6]);
-printf("Register R7: x%04i \n", cpu->reg[7]);
-
-
-printf("Memory\n");
+printf("\n%21Welcome to the LC-3 Simulator Simulator\n\n");
+printf("%21Registor%21Memory\n");
 int i = 0;
-for( ; i < 32; i++){
-	printf("x%04i: x%04i\n", cpu->pc+i, memory[i]); 
-	}
+for( ; i <16; i++){
+	if(i <= 7){
+		printf("%20s", "");
+		printf("R%d: x%04x", i , cpu->reg[i]);
+		printf("%17s", "");
+		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
+	}else if(i == 11){
+		printf("%20s", "");
+		printf("PC: x%04x%3IR: x%04x", cpu->pc, cpu->ir);
+		printf("%6s", "");
+		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
+	}else if(i == 12){
+		printf("%20s", "");
+		printf("A:  x%04x%3B:  x%04x", alu->a, alu->b );
+		printf("%6s", "");
+		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
+	}else if(i == 13){
+		printf("%20s", "");
+		printf("MAR:x%04x%3MDR:x%04x", cpu->MAR, cpu->MDR);
+		printf("%6s", "");
+		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
+	}else if(i == 14){
+		printf("%20s", "");
+		printf("CC: %i%2N: %i%2 Z: %i%2P: %i", CC, N, Z, P);
+		printf("%6s", "");
+		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
+	}else{
+		printf("%46s", "");
+		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
+	}	
+}
 
 
 
