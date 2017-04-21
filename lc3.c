@@ -271,6 +271,21 @@ void aluFunction(int opcode, ALU_p alu){
 }
 
 void menu(CPU_p cpu, unsigned short memory[], ALU_p alu){
+
+FILE *fp;
+char mem[5];
+fp = fopen("memory.txt" , "r");
+if(fp == NULL){
+	perror("Error opening file");
+}
+int j=0;
+char* temp;
+while( fgets (mem, sizeof(mem),fp)!=NULL ) {
+	memory[j] = strtol(mem, &temp, 16);
+	j++;
+}
+fclose(fp);
+
 //display registers and memory 
 printf("\n%21Welcome to the LC-3 Simulator Simulator\n\n");
 printf("%21Registor%21Memory\n");
