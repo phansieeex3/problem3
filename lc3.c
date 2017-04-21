@@ -274,6 +274,36 @@ void aluFunction(int opcode, ALU_p alu){
 
 void menu(CPU_p cpu, unsigned short memory[], ALU_p alu){
 
+
+FILE *hex_file;
+
+hex_file = fopen("memory.hex", "r"); //read only 
+unsigned short ch;
+if(hex_file ==  NULL)
+{
+    printf("File not found...exiting");
+    exit(EXIT_FAILURE);
+
+}
+
+int i = 0;
+/*
+while( (ch = fgets(hex_file)) != EOF){
+    /*printf("%i \n", ch);
+     memory[i] = ch;
+      i++;
+
+	 // if(f)
+
+}
+*/
+
+for(; i < 32; i++)
+{
+	if(fscanf(hex_file, "%04x", &memory[i] != NULL) )
+	 break;
+}
+
 //display registers and memory 
 printf("\n%21Welcome to the LC-3 Simulator Simulator\n\n");
 printf("%21Registor%21Memory\n");
