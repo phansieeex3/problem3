@@ -14,6 +14,7 @@ unsigned short memory[32];   // 32 words of memory enough to store simple progra
 
 //changes data, passed in by reference.
 void aluFunction(int opcode, ALU_p alu);
+void menu(CPU_p cpu, unsigned short memory[]);
 
 int main(int argc, char* argv[]) {
 //making change to code test
@@ -22,12 +23,16 @@ if (argc > 1){
 	sscanf(argv[1],"%hX", &com_in);//takes command from command line
  	struct cpu_s cpu1;//creating cpu
  	CPU_p cpu = &cpu1;//creating pointer to cpu
- 	cpu->pc =0;
+ 	cpu->pc =3;
  	memory[0] = com_in;
 	cpu->reg[1] = FIVE;
 	cpu->reg[2] = FIVETEEN;
 	cpu->reg[3] = ZERO;
  	controller(cpu);
+
+	 //loading hex file into memory array.__
+
+	 menu(cpu, memory);
 }
 }
 int controller (CPU_p cpu) 
@@ -268,3 +273,36 @@ void aluFunction(int opcode, ALU_p alu){
 
 
 }
+
+void menu(CPU_p cpu, unsigned short memory[]){
+
+//display registers and memory 
+printf("Register RO: x%04i \n", cpu->reg[0]);
+printf("Register R1: x%04i \n", cpu->reg[1]);
+printf("Register R2: x%04i \n", cpu->reg[2]);
+printf("Register R3: x%04i \n", cpu->reg[3]);
+printf("Register R4: x%04i \n", cpu->reg[4]);
+printf("Register R5: x%04i \n", cpu->reg[5]);
+printf("Register R6: x%04i \n", cpu->reg[6]);
+printf("Register R7: x%04i \n", cpu->reg[7]);
+
+
+printf("Memory\n");
+int i = 0;
+for( ; i < 32; i++){
+	printf("x%04i: x%04i\n", cpu->pc+i, memory[i]); 
+	}
+
+
+
+
+
+//display PC, IR, A, B, MAR, MDR, CC, N, Z, P
+
+//SELECT 1. load file, 3. step 5. display Mem 9.Exit 
+
+//input:
+//Output:
+
+}
+
