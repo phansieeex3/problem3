@@ -12,7 +12,12 @@ unsigned short memory[32];   // 32 words of memory enough to store simple progra
 
 //changes data, passed in by reference.
 void aluFunction(int opcode, ALU_p alu);
-void menu(CPU_p cpu, unsigned short memory[], ALU_p alu);
+void display(CPU_p cpu, unsigned short memory[], ALU_p alu);
+void load(unsigned short memory[], char* filename );
+int menuPrompt();
+void step(CPU_p cpu, ALU_p alu);
+
+
 
 int main(int argc, char* argv[]) {
 //making change to code test
@@ -21,21 +26,118 @@ if (argc > 1){
 	sscanf(argv[1],"%hX", &com_in);//takes command from command line
  	struct cpu_s cpu1;//creating cpu
  	CPU_p cpu = &cpu1;//creating pointer to cpu
+
+	struct alu_s alus; //creating alu
+	ALU_p alu = &alus;
+
+
+	//setting the register.
  	cpu->pc =0x3000;
  	memory[0] = com_in;
 	cpu->reg[1] = FIVE;
 	cpu->reg[2] = FIVETEEN;
 	cpu->reg[3] = ZERO;
- 	controller(cpu);
 
-	 //loading hex file into memory array.__
+
+	//putting information in the controller.
+ 	controller(cpu, alu);
+
+
+	//display menu options along with empty display of the system until import the file
+	printf("\n%21Welcome to the LC-3 Simulator Simulator\n\n");
+	display(cpu, memory, alu);
+
+	int menu = menuPrompt();
+	while(menu!=9)
+	{
+		//load option
+		if(menu == 1)
+		{
+			char filename[30]; //max  
+		printf("Please enter file name:\n");
+		if(scanf(" %s", &filename) == 1)
+		load(memory, filename);
+			
+
+			menu = menuPrompt();
+		}
+		else if(menu == 3){
+			step(cpu, alu);
+			menu = menuPrompt();
+
+		}
+		else if(menu == 5)
+		{
+			display(cpu, memory, alu);
+			menu = menuPrompt();
+
+		}
+		else if(menu == 9)
+		{
+			free(cpu);
+			free(alu);
+			break;
+		}
+		else
+		{
+			printf("invalid input, quitting....");
+			break;
+		}
+	}
+
+
+	//display the information, at first should be empty until loading. 
+
+	}
 }
-}
-int controller (CPU_p cpu) 
+
+int menuPrompt()
 {
+	int menu = 0;
+	printf("Select: 1) Load, 3) Step, 5) Display Mem, 9) Exit\n");
+    scanf(" %d", &menu);
+
+    return menu;
+}
+
+
+/*Increments to the next instruction. */
+void step(CPU_p cpu, ALU_p alu)
+{
+	cpu->pc+1; 
+	controller(cpu, alu);
+}
+/*
+Takes in the memory and the string file name.
+*/
+void load(unsigned short memory[], char* filename ){
+
+	FILE *fp;
+	char mem[6]; //for new line 
+	fp = fopen(filename , "r");
+	if(fp == NULL)
+	{
+		perror("Error opening file");
+	}
+
+	int j=0;
+	char* temp;
+	while( fgets (mem, sizeof(mem),fp)!=NULL ) {
+		memory[j++] = strtol(mem, &temp, 16);
+	}
+
+	printf("Loading complete. Choose display option to view memory. \n");
+
+	fclose(fp);
+
+}
+int controller (CPU_p cpu, ALU_p alu) 
+{
+	/*
     struct alu_s alus;
     ALU_p alu = &alus;
-    menu(cpu, memory, alu);
+*/
+
     // check to make sure both pointers are not NULL
 	if (cpu == NULL || memory == NULL){
 		return 1;
@@ -270,24 +372,9 @@ void aluFunction(int opcode, ALU_p alu){
 
 }
 
-void menu(CPU_p cpu, unsigned short memory[], ALU_p alu){
-
-FILE *fp;
-char mem[5];
-fp = fopen("memory.txt" , "r");
-if(fp == NULL){
-	perror("Error opening file");
-}
-int j=0;
-char* temp;
-while( fgets (mem, sizeof(mem),fp)!=NULL ) {
-	memory[j] = strtol(mem, &temp, 16);
-	j++;
-}
-fclose(fp);
+void display(CPU_p cpu, unsigned short memory[], ALU_p alu){
 
 //display registers and memory 
-printf("\n%21Welcome to the LC-3 Simulator Simulator\n\n");
 printf("%21Registor%21Memory\n");
 int i = 0;
 for( ; i <16; i++){
@@ -321,10 +408,6 @@ for( ; i <16; i++){
 		printf("x%04x: x%04x\n", cpu->pc+i, memory[i]);
 	}	
 }
-printf("Select: 1) Load, 3) Step, 5) Display Mem, 9) Exit\n");
-printf(">1 File name: test.hex\n");
-printf("-----------------------------------------------------------------------------\n");
-printf("Input:\n");
-printf("Output:\n");
+
 }
 

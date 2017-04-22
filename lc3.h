@@ -53,5 +53,5 @@ typedef struct alu_s {
 }ALU_S;
 typedef struct alu_s* ALU_p;
 typedef struct cpu_s* CPU_p; 
-int controller (CPU_p cpu);
+int controller (CPU_p cpu,  ALU_p alu);
 void aluFunction(int opcode, ALU_p alu);
