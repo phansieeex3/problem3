@@ -17,7 +17,9 @@ void load(CPU_p cpu, unsigned short memory[], char* filename );
 int menuPrompt();
 void step(CPU_p cpu, ALU_p alu);
 int j=0;
+int loaded;
 unsigned short pc_temp;// our memory start at 0 always, so it need to minus the beginning pc to work
+short starting_address;
 
 
 
@@ -65,10 +67,16 @@ int main(int argc, char* argv[]) {
 				menu = menuPrompt();
 		}
 		else if(menu == 3){
-			controller(cpu, alu);
+			if(loaded){
+				controller(cpu, alu);
+			}else{
+				printf("no file loaded\n");
+			}
 			menu = menuPrompt();
 		}
 		else if(menu == 5){
+			printf("Starting Address: 0x");
+			scanf(" %X", &starting_address);
 			display(cpu, memory, alu);
 			menu = menuPrompt();
 		}
@@ -111,6 +119,7 @@ void load(CPU_p cpu, unsigned short memory[], char* filename ){
 	fgets (mem, sizeof(mem),fp);
 	cpu->pc = strtol(mem, &temp, 16);
 	pc_temp = cpu->pc;
+	starting_address = pc_temp;
 	while( fgets (mem, sizeof(mem),fp)!= NULL ) {
 		memory[j++] = strtol(mem, &temp, 16);
 	}
@@ -118,6 +127,7 @@ void load(CPU_p cpu, unsigned short memory[], char* filename ){
 	printf("Loading complete. Choose display option to view memory. \n");
 
 	fclose(fp);
+	loaded = 1;
 
 }
 int controller (CPU_p cpu, ALU_p alu) {
@@ -419,38 +429,35 @@ void display(CPU_p cpu, unsigned short memory[], ALU_p alu){
 	printf("%21Registor%21Memory\n");
 	int i = 0;
 	int k = 16;
-	if (j >= k){
-		k = j;
-	}
 	for( ; i < k; i++){
 		if(i <= 7){
 			printf("%20s", "");
 			printf("R%d: x%08X", i , cpu->reg_file[i]);
 			printf("%13s", "");
-			printf("x%04x: x%04X\n", pc_temp+i, memory[i]);
+			printf("x%04x: x%04X\n", starting_address + i, memory[starting_address - pc_temp + i]);
 		}else if(i == 11){
 			printf("%20s", "");
 			printf("PC: x%04X%3IR: x%04X", cpu->pc, cpu->ir);
 			printf("%6s", "");
-			printf("x%04X: x%04X\n", pc_temp+i, memory[i]);
+			printf("x%04X: x%04X\n", starting_address + i, memory[starting_address - pc_temp + i]);
 		}else if(i == 12){
 			printf("%20s", "");
 			printf("A:  x%04X%3B:  x%04X", alu->a, alu->b );
 			printf("%6s", "");
-			printf("x%04X: x%04X\n", pc_temp+i, memory[i]);
+			printf("x%04X: x%04X\n", starting_address + i, memory[starting_address - pc_temp + i]);
 		}else if(i == 13){
 			printf("%20s", "");
 			printf("MAR:x%04X%3MDR:x%04X", cpu->mar, cpu->mdr);
 			printf("%6s", "");
-			printf("x%04X: x%04X\n", pc_temp+i, memory[i]);
+			printf("x%04X: x%04X\n", starting_address + i, memory[starting_address - pc_temp + i]);
 		}else if(i == 14){
 			printf("%20s", "");
 			printf("CC: %i%2N: %i%2 Z: %i%2P: %i", cpu->cc, cpu->n, cpu->z, cpu->p);
 			printf("%6s", "");
-			printf("x%04X: x%04X\n", pc_temp+i, memory[i]);
+			printf("x%04X: x%04X\n", starting_address + i, memory[starting_address - pc_temp + i]);
 		}else{
 			printf("%46s", "");
-			printf("x%04X: x%04X\n", pc_temp+i, memory[i]);
+			printf("x%04X: x%04X\n", starting_address + i, memory[starting_address - pc_temp + i]);
 		}	
 	}
 }
