@@ -78,8 +78,34 @@ int main(int argc, char* argv[]) {
 		else if(menu == 5){
 			printf("Starting Address: 0x");
 			scanf(" %X", &starting_address);
-			display(cpu, memory, alu);
-			menu = menuPrompt();
+
+			int min = 0x3000;
+			int max = 0x3020;
+
+			if(starting_address > max || starting_address < min) 
+			{
+				printf("Invalid Address. Press <ENTER> to continue.");
+				char prev = 0;
+
+		        while(1)
+		        {
+		            char c = getchar();
+
+		            if(c == '\n' && prev == c)
+		            {
+		                // double return pressed!
+		                break;
+		            }
+
+		            prev = c; 
+		        }
+
+			}
+			else
+			{
+				display(cpu, memory, alu);
+				menu = menuPrompt();
+			}
 		}
 		else if(menu == 9){
 			free(cpu);
@@ -112,7 +138,23 @@ void load(CPU_p cpu, unsigned short memory[], char* filename ){
 	char mem[100]; //for new line 
 	fp = fopen(filename , "r");
 	if(fp == NULL){
-		perror("Error opening file");
+
+		printf("File not found. Press <ENTER> to continue. \n");
+		char prev = 0;
+
+        while(1)
+        {
+            char c = getchar();
+
+            if(c == '\n' && prev == c)
+            {
+                // double return pressed!
+                return;
+            }
+
+            prev = c; 
+        }
+
 	}
 
 	
