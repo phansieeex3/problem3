@@ -31,19 +31,13 @@
 
 
 typedef unsigned short Register;
-typedef unsigned char Bit;
-Bit BEN=0;
-Bit N =0;
-Bit Z = 0;
-Bit P = 0;
-Bit R = 0;
-Bit CC =0;
 typedef struct cpu_s {
-    Register reg[8]; 
-    int pc; 
+    short reg_file[8]; 
+    Register pc; 
     Register ir;
-    Register MAR;
-    Register MDR;
+    Register mar;
+    short mdr;
+    Register n,p,z,cc;
      
 } CPU_S; 
 typedef struct alu_s {
