@@ -72,6 +72,7 @@ int main(int argc, char* argv[]) {
 			}else{
 				printf("no file loaded\n");
 			}
+			display(cpu, memory, alu);
 			menu = menuPrompt();
 		}
 		else if(menu == 5){
